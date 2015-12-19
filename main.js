@@ -47,9 +47,9 @@ firstDropMenu.addEventListener("input", function(){
 function formValidation(){
 
     //validation for name
-    if (splitFullName.length < 2) {
-        fullNameError.textContent = "Please enter your full name seperated by a space ";
-    } else if (splitFullName[0].length && splitFullName[1].length < 2) {
+    if (!splitFullName || splitFullName.length < 2) {
+        fullNameError.textContent = "Please enter your full name seperated by a space";
+    } else if ((!splitFullName[0] || splitFullName[0].length) && (!splitFullName[0] || splitFullName[1].length < 2)) {
         fullNameError.textContent = "Please make sure first name and last name are at least 2 characters";
     } else {
         fullNameError.textContent = "";
@@ -65,25 +65,21 @@ function formValidation(){
     //validation for age
     if (ageStatement.value === "0") {
         ageError.textContent = "you must be 21 or older to enter the site";
-        return false;
     } else {
         ageError.textContent = "";
-    }
-
-    //if all of my error spans are not equal to empty strings return false
-    if(fullNameError.textContent && ageError.textContent && phoneError.textContent !== ""){
-        return false;
-    } else {
-        return true;
     }
 }
 
 infoForm.addEventListener('submit', function(e){
     console.log(e);
     splitName();
-    var valid = formValidation();
-    if (!valid){
-        //prevent form submission... by default it will submit do to the event submit event listener
+    formValidation();
+    //handle final check inside the event to ensure it prevents submission if errors are not empty
+    if((fullNameError.textContent || ageError.textContent || phoneError.textContent !== "") &&
+        fullNameError.textContent || phoneError.textContent || ageError.textContent === true) {
         e.preventDefault();
+        return false;
+    } else {
+        return true;
     }
 });
